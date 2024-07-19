@@ -2,10 +2,14 @@
 Project for Quantitative Research Dashboard
 
 
-Resources utilized in research 
-Twitter #hashtags scraped on March 6th 
-Two important books for the Sámi community 
+Resources utilized in research: 
+1. Twitter #hashtags scraped on March 6th using my own python scraping program
 
-Data gathered from Articles (LIST HERE) 
+2. Two important books for the Sámi community 
 
-And published data 
+3. Data gathered from relevent articles
+
+4. Published data gathered manually
+
+
+Final Dashboard Published on Rhub: https://rpubs.com/vhbarasa/1042777 
