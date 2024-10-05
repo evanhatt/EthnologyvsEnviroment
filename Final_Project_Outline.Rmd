@@ -1,0 +1,789 @@
+---
+title: "Final Project Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: cerulean
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(flexdashboard)
+library(ggplot2)
+library(tidyverse)
+library(knitr)
+library(dbplyr)
+library(leaflet)
+library(htmltools)
+library(tidyr)
+library(stopwords)
+library(tidytext)
+library(wordcloud)
+library(shinymeta)
+
+```
+
+## Welcome! 
+
+
+# About {.tabset}
+
+## Current Sámi activists and Ally Opportunities 
+
+Learn about Pan-Sámi culture and become an Ally by Listening and Reading!
+
+```{r, echo=FALSE}
+library(htmltools)
+
+# Define the paths and URLs for the images
+image_path1 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/Podcast.png"
+link_url1 <- "https://podcasts.apple.com/us/podcast/r%C3%A1jehis-s%C3%A1pmi/id1608443936"
+
+image_path2 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/Samicouncil.png"
+link_url2 <- "https://twitter.com/SaamiCouncil/status/1622608329611649026"
+
+image_path3 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/Sami_center.png"
+link_url3 <- "https://www.samiculturalcenter.org/"
+
+# Generate HTML code to display the images side by side with adjusted CSS
+image_width <- 120
+image_height <- 100
+
+image_html1 <- tags$a(tags$img(src = image_path1, width = image_width, height = image_height), href = link_url1)
+image_html2 <- tags$a(tags$img(src = image_path2, width = image_width, height = image_height), href = link_url2)
+image_html3 <- tags$a(tags$img(src = image_path3, width = image_width, height = image_height), href = link_url3)
+
+# Adjust the CSS styling to make sure images are properly aligned in one row
+html <- tagList(
+  div(style = "display: flex; justify-content: space-between;", 
+      image_html1,
+      image_html2,
+      image_html3)
+)
+
+html
+
+```
+
+### About this Dashboard
+
+This dashboard looks at the **impact of natural electricity windmill
+fields** on the ecological and controversial land use issues that the
+indigenous people of Scandinavia (Sámi) with specific focus on Reindeer
+in Norway through mix method analyses.Please follow me on this journey. First we will understand this projects main focus Indigenous people of Norway's (Sámi people) land rights and the ecological impacts of Windmill fields in Norway. Second we will see visual representations of the windmill fields locations and the impact they have on reindeer historically 1000 year migration patterns and food accessibility through lichen growth. Lastly we will see the poltical sentiment that surrounds recent Norwegian government decisions and indigenous and their ally's activism on Twitter. 
+
+Here are ways you can manipulate the data
+
+-   Filter tweet hashtags
+
+Enjoy!
+
+-   This example dashboard uses social sentiment data extracted from the
+    social media platform of Twitter by the author, and observational
+    and historical data gathered from social scientists through their
+    written insights in journals and open databases and open the
+    government database data.gov.
+
+-   **Full citations:**
+
+1.  Rosqvist, G.C., Inga, N. & Eriksson, P. Impacts of climate warming
+    on reindeer herding require new land-use strategies. Ambio 51,
+    1247--1262 (2022). <https://doi.org/10.1007/s13280-021-01655-2>
+
+2.  Rasmus Kløcker Larsen, Maria Boström, Muonio Reindeer Herding
+    District, Vilhelmina Södra Reindeer Herding District, Voernese
+    Reindeer Herding District, Jenny Wik-Karlsson,The impacts of mining
+    on Sámi lands: A knowledge synthesis from three reindeer herding
+    districts,The Extractive Industries and Society,Volume
+    9,2022,101051,ISSN 2214-790X,
+    <https://doi.org/10.1016/j.exis.2022.101051>.
+
+3.  Tor A. Benjaminsen, Hugo Reinert, Espen Sjaastad & Mikkel Nils Sara
+
+    (2015) Misreading the Arctic landscape: A political ecology of
+           reindeer, carrying capacities, and overstocking in Finnmark,
+           Norway, Norsk Geografisk Tidsskrift - Norwegian Journal of
+           Geography, 69:4, 219-229, DOI: 10.1080/00291951.2015.1031274
+
+4.  Maynard, N.G.1, Oskal, A., Turi, J.M., Mathiesen, S.D., Eira
+    ,I.M.G., Yurchak1, B., Etylin,V., Gebelein, J. (2009) Impacts of a
+    Changing Climate and Land Use on Reindeer Pastoralism: Indigenous
+    Knowledge & Remote Sensing. ntrs.nasa.gov.
+    <https://ntrs.nasa.gov/api/citations/20090019721/downloads/20090019721.pdf>
+
+5.  Mendes, Mateus & Menezes, Diogo & Almeida, Jorge Alexandre &
+    Farinha, José. (2020). Wind Farm and Resource Datasets: A
+    Comprehensive Survey and Overview. Energies. 13. 10.3390/en13184702.
+
+6.  Laestadius,Ann-Helén.(2023).Stolen.translated by Rachel
+    Willson-Broyles. United States:Scribner.
+
+7.  Nystad, Kristin, Anna Rita Spein, Benedicte Ingstad. (2014).
+    Community resilience factors among indigenous Sa ́mi adolescents:A
+    qualitative study in Northern Norway. Transcultural Psychiatr Vol.
+    51(5) 651--672.DOI: 10.1177/1363461514532511.
+
+8.  Hausner, VH, Engen, S, Brattland, C, Fauchald, P. Sámi knowledge and
+    ecosystem-based adaptation strategies for managing pastures under
+    threat from multiple land uses. J Appl Ecol. 2020; 57: 1656-- 1665.
+    <https://doi.org/10.1111/1365-2664.13559>
+
+9.  Markkula, I., M. T. Turunen, and S. Kantola. (2019). Traditional and
+    local knowledge in land use planning: insights into the use of the
+    Akwé: Kon Guidelines in Eanodat, Finnish Sápmi. Ecology and Society
+    24(1):20. <https://doi.org/10.5751/ES-10735-240120>
+
+10. Jordan, Stankikos David. Sámi and the climate crisis: The Colonial
+    Anthropocene. (2020).thesis. University of Oregon.
+    <https://scholarsbank.uoregon.edu/xmlui/bitstream/handle/1794/25765/Final_Thesis-Jordan_N.pdf?sequence=1>.
+
+11. Bjørklund, Ivar. Sápmi - Becoming a Nation: The Emergence of a Sami
+    National Community. Tromsø: Tromsø Univ. Museum, 2003.
+
+12. Broderstad, Else Grete. "Political Autonomy and Integration of
+    Authority: The Understanding of Saami Self-Determination 1." In
+    Indigenous Rights, pp. 249-273. Routledge, 2017.
+
+13. Gaski, L. (2008). Sámi identity as a discursive formation:
+    essentialism and ambivalence. In indigenous peoples:
+    self-determination, knowledge, indigeneity. Delft: Eburon, p. 219-
+
+14. 
+
+15. Gellner, Ernest. Nations and Nationalism. United Kingdom: Cornell
+    University Press, 1983.
+
+16. Gilbert Helen et al. In the Balance: Indigeneity, Performance,
+    Globalization. United Kingdom: Liverpool University Press, 2017.
+
+17. Hasselström, Elisabeth. "Representation Construction of Indigeneity
+    by State vs Sámi Governments." Thesis. Mittunicweaitetet Mid Sweden
+    university, 2022.
+
+18. Hobsbawm, E. J.. Nations and Nationalism Since 1780: Programme,
+    Myth, Reality. Spain: Cambridge University Press, 2012.
+
+# Introduction
+
+## Context
+
+### Who are the Sámi people and is Sápmi a Nation?
+
+The Sámi people, also known as Saami or Sami, are indigenous to the
+northern parts of Norway, Sweden, Finland, and Russia's Kola Peninsula.
+They have a distinct language, culture, and traditional way of life,
+heavily dependent on reindeer herding, fishing, and hunting. Despite
+being recognized as an indigenous people by the United Nations, the Sámi
+have historically faced discrimination and forced assimilation policies,
+which have threatened their cultural survival. In recent years, there
+have been efforts to promote and protect Sámi rights and cultural
+heritage and to protect their lands from exploitation.
+
+```{r}
+
+img3 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/SamiActivists.jpeg" 
+
+img(width = "50%", height = "auto", src = img3, alt = "")
+```
+
+Camilla Andersen DEC 15, 2015
+(<https://thegroundtruthproject.org/indigenous-people-of-the-arctic-head-home-after-an-historic-climate-agreement/>)
+
+Nations have been drawn and bordered using fabricated notions of
+nationness, redistributed, and renamed by its conquerors, and traded and
+bought by the elitist governments. In true colonist fashion, Sápmi and
+its Sámi caretakers have been added to the sickening multigenerational
+Indigenous stories, not unlike the Natives of Australia and those Native
+to American and Canada. Sámi land was maliciously stripped of their
+original names and cultural significance and placed under the grouped
+countries we now call Scandinavia. (Bjørklund 2003) In the words of
+Gellner, "Nationalism is not the awakening of nations to
+self-consciousness: it invents nations where they do not exist. Before
+the ideas of landownership existed and Scandinavian countries became
+sovereign nations, borders were not engrained in their citizens minds.
+However, the raise of nationalism compelled lands to be renamed in the
+image of the country's meticulously constructed national culture.
+
+With Scandinavian nationalism in mind then, the Sámi national movement
+must also be defined according to its political positioning in the
+Scandinavian law. In 1977, The Swedish government for the first time,
+acknowledged the Sámi as a minority people. Norway followed in 1990, and
+then Finland in 1995. At this juncture, it is important to point out
+that Russia has never recognized Sámi parliament claiming to represent
+the Sámi living in the Kola Peninsula till today nor has Russia amended
+its constitution to include the Sámi as a recognized minority with
+rights: Sámi are invisible and considered effectively erased in elite
+minds of the Soviet Union.
+
+Here is a map of the recognized borders of Sápmi and therefore their
+land rights.
+
+```{r}
+img4 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/sampi.png"
+
+img(width = "100%", height = "60%", src = img4, alt = "")
+
+```
+
+(<https://decolonialatlas.wordpress.com/2021/02/08/sapmi-the-sami-homelands/>)
+
+These small victories in the previously mentioned Scandinavian countries
+did not come without tumultuous political debate and continued Sámi
+shaming and oppression. This project hopes to show some of the struggles
+and recent downturn of these victories that current Norwegian Sámi are
+facing.
+
+## 
+
+### Why Did I choose Windmills? Isn't natural energy a good thing for the Enviroment?
+
+There is a misconception surrounding natural energy especially for
+Windmill fields.
+
+For one Wind power provides unstable power supply which means that this
+power source needs to be supplemented by other sources of power.
+Electricity from wind power plants can be stored in batteries but this
+is very expensive and requires large resources which many companies
+buiding the fields do not budget for or plan on implementing once the
+initial build is complete.
+
+This project will show just a small side of Wind power damage. Though it
+may produce relatively small amounts of greenhouse gas emissions, the
+local damages caused by encroachments in nature and the environment life
+cycle are severe.
+
+On the basis of the desire to preserve natural habitats, landscapes and
+reindeer herds, wind power is not environmentally friendly, but rather a
+largely environmentally harmful form of power generation. This is also a
+blatant encroachment on the Sámi indigenous peoples cultural and rights
+and the future for reindeer herding.
+
+"Wind power must also be assessed on the basis of the environmental
+impacts concerning the production of wind turbines and their
+aftereffects. Wind power requires mines for copper, neodymium,
+dysprosium, lead, nickel, aluminum, iron, limestone and more, production
+plants for generators, turbine blades and foundations, as well as the
+blasting and driving connected to assembly of wind power plants. Wind
+power generation is far from"emission-free"! Power cables from wind
+turbines to consumers also use a lot of metals." (Motvind Norge and
+Naturvernforbundet i Ávjovárri 2020:19)
+
+```{r}
+img4 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/Windmill_reindeer.png"
+
+img(width = "100%", height = "60%", src = img4, alt = "")
+
+```
+
+# WindMill Location and Lichen Growth statistics
+
+## Let's Look into the Data
+
+### Number of Windmills Per Site
+
+This interactive map visualizes the coordinates for each windmill
+field in the country of Norway excluding sites currently under construction. This map demonstrates the location of these windmill fields as being primary built on recognized indigenous land or Sápmi in Norway. 
+
+This data set is a sample of manually collected data from
+<https://resdm.com/home>. All rights are reserved by RESDM.
+
+```{r}
+GIS <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/GISwindfarms_Norway.csv")
+```
+
+```{r}
+# Create a leaflet map of the GIS located Windmills in Norway
+
+
+library(leaflet)
+
+# Create a leaflet map
+leaflet(GIS) %>%
+  
+  # Add the map tiles
+  addTiles() %>%
+  
+  # Add the markers for each point
+  addMarkers(
+    ~longitude, ~latitude,
+    popup = paste(
+      "<b>Type:</b>", GIS$type,
+      "<br><b>Capacity:</b>", GIS$capacity,
+      "<br><b>Turbines:</b>", GIS$turbines,
+      "<br><b>Year Online:</b>", GIS$year.online
+    )
+  )
+
+```
+
+This data set is a sample of manually collected data from
+<https://resdm.com/home>. All rights are reserved by RESDM
+
+## Column {tab.set}
+
+### Enviromental decline seasonal timeline from 2010-2019
+
+Fig 1 - LAND INUNDATED: 110 Km2. Hydropower development caused habitat
+loss and barriers for reindeer. To estimate its impact, as a baseline
+scenario we simulate the removal of magazines built after 1973 in
+Setesdal Ryfylke, Norway [Ref: 1]
+
+```{r}
+
+# Define image paths
+img1 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/.Before_pastures.png.icloud"
+img2 <- "/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/.After_pastures.png.icloud"
+
+img(width = "100%", height = "60%", src = img1, alt = "")
+
+
+```
+
+Fig 1 zooms in one of the largest hydropower complex in Europe (Blåsjø
+and neighbouring magazines). Moving the slider allows to compare the
+area flooded BEFORE 1973 (left) & AFTER (right) construction: 110 Km2
+were inundated.
+
+Fig 2 - HABITAT LOST: 222 km2. Moving the slider allows to see that an
+estimated 222 km2 (or 31 092 soccer fields) of functional reindeer
+habitat were lost due to construction of hydropower magazines. 
+
+ **Taken from social science experts** at:
+<https://sites.google.com/view/reindeermapsnorway/scenario-analyses?authuser=0>
+```{r}
+
+img(width = "100%", height = "60%", src = img2, alt = "")
+
+```
+
+### Lichen Decline or Growth For Reindeer
+
+This data shows the Lichen growth from
+2003 and 2015, which intentionally seemed to support a balance of Reindeer herd population in the 21st century until I dug deeper. This data actually confirms the decline of the reindeer population and loss of
+traiditonal grazing lands by combining this data with the above images of flooding and ecological change in the surrounding lichen grazing lands that have become inaccessible to migrating reindeer.
+
+**For more information please read what Tor and collegues has to say about this phenomenon.** 
+
+Tor A. Benjaminsen, Hugo Reinert, Espen Sjaastad & Mikkel Nils Sara
+(2015) Misreading the Arctic landscape: A political ecology of reindeer,
+carrying capacities, and overstocking in Finnmark, Norway, Norsk
+Geografisk Tidsskrift - Norwegian Journal of Geography, 69:4, 219-229,
+DOI: 10.1080/00291951.2015.1031274
+
+```{r}
+
+lichen <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalDashboard/lichensheet1.csv")
+
+
+
+# Create a plot for BigTrees column
+ggplot(lichen, aes(x=Site, y=Lichen, fill=factor(BigTrees))) +
+  geom_bar(stat="identity") +
+  facet_grid(RangeType~Year) +
+  labs(x="Site", y="Lichen Percentage", fill="Big Trees") +
+  theme_bw() +
+  guides(fill=guide_legend(title="Frequency", position="right"))
+
+
+# Create a plot for SmallTrees column
+ggplot(lichen, aes(x=Site, y=Lichen, fill=factor(SmallTrees))) +
+  geom_bar(stat="identity") +
+  facet_grid(RangeType~Year) +
+  labs(x="Site", y="Lichen Percentage", fill="Small Trees") +
+  theme_bw() +
+  guides(fill=guide_legend(title="Frequency", position="right"))
+
+```
+
+# Twitter Activism 
+
+
+```{r}
+Fosen <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/Fosen-tweets.csv")
+SamiRights <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/SamiRights-tweets.csv")
+StandwithSápmi <- read.csv("//Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/StandWithSápmi-tweets.csv")
+Sami<- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/Sami-tweets.csv")
+
+Sápmi <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/sápmi-tweets.csv")
+
+WindMills <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/WindFarms-tweets.csv")
+
+IndigenousPeoples <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/IndigenousPeoples-tweets.csv")
+
+Samilandrights <- read.csv("/Users/ellievanhattem/Desktop/Desktop - Ellie’s MacBook Air/Spring 2023/Anthro630/FinalProject/Twitter_Hashtags_ANTH630/saamilandrights-tweets.csv")
+
+
+Samilandrights1 <-Samilandrights
+IndigenousPeoples1 <- IndigenousPeoples
+WindMills1 <- WindMills
+Sápmi1 <- Sápmi
+Sami1 <- Sami
+StandwithSápmi1 <- StandwithSápmi
+SamiRights1 <- SamiRights
+Fosen1 <- Fosen
+
+
+
+```
+
+```{r}
+
+# Split "date" into two columns that will separate the time and the date values 
+# Tag 1 
+Fosen1 <- Fosen1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# Fosen1[c("date1", "time")] <-sapply(strsplit(Fosen1$date, " "),c)
+
+
+Fosen1$time <- substr(Fosen1$time, 1, 8)
+# Remove original datetime column
+
+### Tag 2 
+
+SamiRights1 <- SamiRights1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# SamiRights1[c("date1", "time")] <-sapply(strsplit(SamiRights1$date, " "),c)
+
+
+SamiRights1$time <- substr(SamiRights1$time, 1, 8)
+# Remove original datetime column
+
+# Tag 3 
+StandwithSápmi1 <- StandwithSápmi1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# StandwithSápmi1[c("date1", "time")] <-sapply(strsplit(StandwithSápmi1$date, " "),c)
+
+
+StandwithSápmi1$time <- substr(StandwithSápmi1$time, 1, 8)
+# Remove original datetime column
+
+
+# Tag 4 
+Sami1 <- Sami1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# Sami1[c("date1", "time")] <-sapply(strsplit(Sami1$date, " "),c)
+
+
+Sami1$time <- substr(Sami1$time, 1, 8)
+# Remove original datetime column
+
+
+# Tag 5 
+Sápmi1 <- Sápmi1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# Sápmi1[c("date1", "time")] <-sapply(strsplit(Sápmi1$date, " "),c)
+
+
+Sápmi1$time <- substr(Sápmi1$time, 1, 8)
+# Remove original datetime column
+
+
+# Tag 6 
+WindMills1  <- WindMills1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# WindMills1 [c("date1", "time")] <-sapply(strsplit(WindMills1 $date, " "),c)
+
+
+WindMills1 $time <- substr(WindMills1 $time, 1, 8)
+# Remove original datetime column
+
+
+
+# Tag 7 
+IndigenousPeoples1  <- IndigenousPeoples1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# IndigenousPeoples1 [c("date1", "time")] <-sapply(strsplit(IndigenousPeoples1$date, " "),c)
+
+
+IndigenousPeoples1$time <- substr(IndigenousPeoples1$time, 1, 8)
+# Remove original datetime column
+
+
+# Tag 8 
+
+Samilandrights1 <- Samilandrights1 %>% 
+  tidyr::separate(date, into = c("date1", "time"), sep = 11)
+# Samilandrights1 [c("date1", "time")] <-sapply(strsplit(Samilandrights1$date, " "),c)
+
+
+Samilandrights1$time <- substr(Samilandrights1$time, 1, 8)
+# Remove original datetime column
+
+```
+
+```{r}
+Fosen1$content <- tolower(Fosen1$content)
+Sami1$content <- tolower(Sami1$content)
+Samilandrights1$content <- tolower(Samilandrights1$content)
+SamiRights1$content <- tolower(SamiRights1$content)
+IndigenousPeoples1$content <- tolower(IndigenousPeoples1$content)
+WindMills1$content <- tolower(WindMills1$content)
+Sápmi1$content <- tolower(Sápmi1$content)
+StandwithSápmi1$content <- tolower(StandwithSápmi1$content)
+
+```
+
+```{r}
+
+# Defined the keywords to search for
+keywords <- c("statsministeren", "politiet", "protestors", "protesting", "windmillparks", "vindmølleparker", "distriktspolitiet", "solidarity", "vindmøllene", "regjeringen", "government")
+
+# Defined countries to search for in the tweets
+country <- c("Finland", "America", "Norway", "Sweden", "Fosen", "Norwegian", "American", "Swedish", "Finish")
+```
+
+```{r}
+# Create a new topic column based on the matches for the different tags dataset
+
+matches_fosen <- sapply(keywords, grepl, x = Fosen1$content, ignore.case = TRUE)
+Fosen1$topic <- ifelse(rowSums(matches_fosen) > 0, colnames(matches_fosen)[max.col(matches_fosen)], "Other")
+
+matches_sami <- sapply(keywords, grepl, x = Sami1$content, ignore.case = TRUE)
+Sami1$topic <- ifelse(rowSums(matches_sami) > 0, colnames(matches_sami)[max.col(matches_sami)], "Other")
+
+matches_samilandrights <- sapply(keywords, grepl, x = Samilandrights1$content, ignore.case = TRUE)
+Samilandrights1$topic <- ifelse(rowSums(matches_samilandrights) > 0, colnames(matches_samilandrights)[max.col(matches_samilandrights)], "Other")
+
+matches_samirights <- sapply(keywords, grepl, x = SamiRights1$content, ignore.case = TRUE)
+SamiRights1$topic <- ifelse(rowSums(matches_samirights) > 0, colnames(matches_samirights)[max.col(matches_samirights)], "Other")
+
+matches_indigenous <- sapply(keywords, grepl, x = IndigenousPeoples1$content, ignore.case = TRUE)
+IndigenousPeoples1$topic <- ifelse(rowSums(matches_indigenous) > 0, colnames(matches_indigenous)[max.col(matches_indigenous)], "Other")
+
+matches_windmills <- sapply(keywords, grepl, x = WindMills1$content, ignore.case = TRUE)
+WindMills1$topic <- ifelse(rowSums(matches_windmills) > 0, colnames(matches_windmills)[max.col(matches_windmills)], "Other")
+
+matches_sapmi <- sapply(keywords, grepl, x = Sápmi1$content, ignore.case = TRUE)
+Sápmi1$topic <- ifelse(rowSums(matches_sapmi) > 0, colnames(matches_sapmi)[max.col(matches_sapmi)], "Other")
+
+matches_standwithsapmi <- sapply(keywords, grepl, x = StandwithSápmi1$content, ignore.case = TRUE)
+StandwithSápmi1$topic <- ifelse(rowSums(matches_standwithsapmi) > 0, colnames(matches_standwithsapmi)[max.col(matches_standwithsapmi)], "Other")
+
+
+```
+
+```{r}
+
+# Use pivot_wider to convert the dataframe to wide format
+Fosen1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+Sami1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+Samilandrights1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+SamiRights1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+IndigenousPeoples1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+WindMills1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+Sápmi1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+StandwithSápmi1_wide <- tidyr::pivot_wider(Fosen1, names_from = "topic", values_from = "username")
+
+
+```
+
+```{r}
+#knitr::opts_chunk$set(echo = TRUE) Using this arugment did not help present the data in nice columns like you can have in the markdown before knitting. 
+
+# Define your custom stop words
+my_stopwords_en <- c("the", "and", "or", "but", "a", "an", "to", "of", "in", "is", "this", "that", "it", "with", "for", "https", "http", "t.co")
+
+# Create a new data frame with the custom stop words
+my_stopwords_en_df <- data.frame(word = my_stopwords_en, language = "en")
+
+no_stopwords <- stopwords::stopwords(language = "norwegian")
+
+
+no_stopwords_df <- data.frame(word = no_stopwords, lexicon = "no_stopwords")
+
+my_stopwords_en_df <- my_stopwords_en_df %>% mutate(lexicon = "my_stopwords_en")
+no_stopwords_df <- no_stopwords_df %>% mutate(language = "no")
+
+
+# Combine the custom stop word list with the default stop word list
+combined_stopwords <- rbind(my_stopwords_en_df, no_stopwords_df)
+
+```
+
+```{r}
+
+
+# Convert the matrix to a dataframe
+fosen_df <- as.data.frame(matches_fosen)
+sami_df <- as.data.frame(matches_sami)
+samilandrights_df <-as.data.frame(matches_samilandrights)
+samirights_df <- as.data.frame(matches_samirights)
+indigenous_df <- as.data.frame(matches_indigenous)
+windmills_df<- as.data.frame(matches_windmills)
+sapmi_df<- as.data.frame(matches_sapmi)
+standwithsapmi_df <- as.data.frame(matches_standwithsapmi)
+
+# Reshape the data into a tidy format
+fosen_tidy <- fosen_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_fosen")
+
+
+sami_tidy <- sami_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_sami")
+
+
+
+samilandrights_tidy <- samilandrights_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_samilandrights")
+
+
+samirights_tidy <- samirights_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "samirights_fosen")
+
+
+indigenous_tidy <- indigenous_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_indigenous")
+
+
+windmills_tidy <- windmills_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_windmills")
+
+
+sapmi_tidy <- sapmi_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_sapmi")
+
+
+standwithsapmi_tidy <- standwithsapmi_df %>%
+  pivot_longer(cols = everything(), names_to = "word", values_to = "count") %>%
+  mutate(lexicon = ifelse(word %in% combined_stopwords, "combined_stopwords", "none"), dataset = "matches_standwithsapmi")
+
+
+```
+
+```{r}
+
+# Remove stop words from the content column
+fosen1_tidy <- Fosen1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+sami1_tidy <- Sami1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+samilandrights1_tidy <- Samilandrights1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+samirights1_tidy <- SamiRights1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+indigenouspeoples1_tidy <- IndigenousPeoples1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+windmills1_tidy <- WindMills1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+sápmi1_tidy <- Sápmi1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+# Remove stop words from the content column
+StandwithSápmi1_tidy <- StandwithSápmi1 %>%
+  unnest_tokens(word, content) %>%
+  anti_join(combined_stopwords) 
+
+
+```
+
+```{r}
+
+
+# Read in all datasets and add a column specifying the dataset name
+samirights1_tidy <- samirights1_tidy %>% 
+  mutate(dataset = "SamiRights")
+StandwithSápmi1_tidy <- StandwithSápmi1_tidy %>% 
+  mutate(dataset = "StandwithSápmi")
+sami1_tidy <- sami1_tidy %>% 
+  mutate(dataset = "Sami")
+sápmi1_tidy <- sápmi1_tidy %>% 
+  mutate(dataset = "Sápmi")
+windmills1_tidy <- windmills1_tidy %>% 
+  mutate(dataset = "WindMills")
+indigenouspeoples1_tidy <- indigenouspeoples1_tidy %>% 
+  mutate(dataset = "IndigenousPeoples")
+samilandrights1_tidy <- samilandrights1_tidy %>% 
+  mutate(dataset = "Samilandrights")
+fosen1_tidy <- fosen1_tidy %>% 
+  mutate(dataset = "Fosen")
+
+# Combine all datasets into a single dataframe
+all_tweets <- bind_rows(samilandrights1_tidy, indigenouspeoples1_tidy, windmills1_tidy, sápmi1_tidy, StandwithSápmi1_tidy, samirights1_tidy, fosen1_tidy, sami1_tidy)
+
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a sample of approximately 100 rows per dataset
+sample_tweets <- all_tweets %>%
+  group_by(dataset) %>%
+  sample_n(min(100, n()))
+
+```
+
+
+## Social Media Activism efforts surrounding Sámi land issues
+
+This social media analysis utilizes the focused data scraping of relevant twitter hashtags provide a larger contextual and political understanding and hopefully a way for you to connect with a platform you might have used or are currently using and the valuable sentiment analysis and inferences that can be made when people come to gather around a common issue. 
+
+First I have created a word cloud of the most used words of each Hashtag that is filterable!
+
+As you can see there are some Norwegian words and English words presented in this data. I have worked with both languages through translation and combining different filtered stopwords/lexicons together to present the data. An interesting thing that I found was that some accounts user names were mentioned in the wordclouds showing their importance in the issues being discussed. 
+
+In future I would like to extend this twitter analysis to filter for the word
+Sámi, Norwegian, American, and Indigenous to determine, I hope a general
+nationality and the correlation with the previous emotionally
+categorized word cloud. 
+
+Next I wanted to show you which Hastags connect the most with people who are passionate about Sápmi issues and the recent Fosen ruling. To best show this I have created a static Chord Diagram that shows #IndigenousPeoples and #Windmills is the most used Hashtags on Twitter (frequency). 
+
+
+## Toggle down Wordclounds per Tweeter Hashtag
+
+```{r}
+# Use the `knitr::include_app` function to embed the Shiny app from shinyapps.io
+knitr::include_app("https://vhbarasa.shinyapps.io/FinalProjectWordcloud/", height = "600px")
+
+```
+```{r}
+
+library(circlize)
+library(dplyr)
+
+# Calculate the count of unique usernames for each dataset
+dataset_counts <- sample_tweets %>% 
+  distinct(username, dataset) %>% 
+  count(dataset) %>%
+  arrange(desc(n))
+
+# Create a matrix of dataset counts
+matrix_counts <- matrix(dataset_counts$n, nrow = 1)
+
+# Set the names for each dataset
+colnames(matrix_counts) <- dataset_counts$dataset
+
+# Create the chord diagram
+chordDiagram(matrix_counts, transparency = 0.5)
+
+
+
+```
